@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <script src="js/main.js"></script>
+    <script>
+    // configuration
+    Router.config({ mode: 'history'});
+    // returning the user to the initial state
+    Router.navigate();
+    // adding routes
+    Router
+    .add(/about/, function() {
+        console.log('about');
+    })
+    .add(/products\/(.*)\/edit\/(.*)/, function() {
+        console.log('products', arguments);
+    })
+    .add(function() {
+        console.log('default');
+    })
+    .check('/products/12/edit/22').start();
+    // forwarding
+    Router.navigate('/products/12/edit/22');
+    //Router.flush()
+    </script>
+    <title>title</title>
+</head>
+<body>
+    <button id="about">about</button>
+    <button id="products">products</button>
+    <script>
+        document.getElementById('about').addEventListener('click', function () {
+            Router.navigate('about')
+        })
+        document.getElementById('products').addEventListener('click', function () {
+            Router.navigate('products/12/edit/2')
+        })
+    </script>
+</body>
+</html>

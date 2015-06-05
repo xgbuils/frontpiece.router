@@ -1,0 +1,34 @@
+{
+  "name": "frontpiece.router",
+  "version": "0.1.0",
+  "description": "frontend router",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xgbuils/frontpiece-router"
+  },
+  "keywords": [
+    "frontend",
+    "router"
+  ],
+  "author": "Xavier Garcia Buils <xgbuils@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xgbuils/frontpiece-router/issues"
+  },
+  "homepage": "https://github.com/xgbuils/frontpiece-router",
+  "devDependencies": {
+    "browser-sync": "^2.7.6",
+    "browserify": "^10.2.3",
+    "gulp": "^3.8.11",
+    "gulp-util": "^3.0.5",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.2.1"
+  },
+  "dependencies": {
+    "object-assign": "^2.0.0"
+  }
+}
