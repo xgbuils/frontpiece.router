@@ -7,3 +7,15 @@ node_js:
 - iojs-v1.0.4
 before_script:
 - npm install -g gulp
+script:
+  - npm test
+  # Karma sauce is limited to running about 5-7 browsers (or it will timeout) at a time so we just run vendor by vendor here
+  - karma start karma.conf-sauce.js --browsers FIREFOX_V4,FIREFOX_V11,FIREFOX_V21,FIREFOX_V30,FIREFOX_V35 #,CHROME_V26,CHROME_V31,CHROME_V39,CHROME_V40,ANDROID_V4.0,ANDROID_V4.3
+  # - karma start karma.conf-sauce.js --browsers IE_V7,IE_V8,IE_V9,IE_V10,IE_V11
+  # - karma start karma.conf-sauce.js --browsers SAFARI_V5,SAFARI_V6,SAFARI_V7,SAFARI_V8.0,OPERA_V11,OPERA_V12
+env:
+  global:
+    - secure: zfwIlC2wSexcdQCr0fn2MRZuITNppU44MU+NS5sbQ6gyUSuZNtyLcHUpFsAT57x52ZG1hfaPU+UhDeyeeQpchLqqtEm+Z2TvbqNxZpnh0fggcZl+Lt3Hr4NAz13Qxpd23HbLZ2M49R8Ju+fAqx33D38p7BafNTlDWurSZgaVm+ZCKUio6NYe5pMWuhd5M++nzBF2NtC8sV+EQm5Wb31/R+iEZVtnU3CWmjnUOfWhl//zbSXjDkKsANfUaPYwVITNY/MH4luYZe9/HWRfLWDDiRnsra6OZSN3sANNFuqoF+womY51+F5XNrv7QExDSQkQmQZnQ/kj+KxZKFDn2++52YGBtfMmhdqbmuQLzsn3/XGQIFu2gk9//STA/APuDjuplm9+i5tysoqC4g1r1q+f/cMtStfqL+6TuIZWtK9fQxSZJJOoPTmzDU/aUGmVmEaMBxaszil+QFeuj9HMncpDNSDfGTqWURCD8RS9clZS10XiM9QDAB8SJN3O7XxSnuGbv3MAaLBpyNZ/9zaw84odb8JgIHHu37mRhtwshu+5DINJ+ew9iVJ9WNsLJNJPIRN/yCweLww4gZgPgo5X1mWEBDSsKNRfMWMhipU5J4hmptu4ZYD4Xs9UEdX0PCWvd6FlHZ9oEOOxfAm+RjjR8WPK1wmdh28fiyHH0cUbt+oxmSw=
+    - secure: 2UvDGTzb0O7QyoaDCsZ6VYVTd2iYE7gQZjoiz+guG61F+CQ3e2+sNC8wvzEO/WbLDkmS00T/FTjRUmXX92Kzpr5BYTeQv8PgnTude13WGL7gLvo9VbKsTD/26FtskIySn0tc93o2wyh7xchPnm/sdNPw6Jj+P1bOiJ3nc7+lajXnXJtGNBjdA/qWsBMrvQQzINWQ1uHEqJpQSnEmapisWSq4KrHOzStPq/Kz9s76hVND9lqjZxNEmTW/TeCUYfnynb1k+mFYd/as793PxqJO4Y1HnxD5MOOZWqiQTxfVtsatma1eryGR+T4ZFdQvNImwnZjxRqby0x80XqQwWOTjp1VBbVorjHo9lIG8gSqzrXpaqzHPq4TLc2D0p6ssMc9cAMNfrlgjyUs9NbYBKCPbUesOWnDbMbXXVtj8gYv1ESutTw9f4lWS3Dk6N/4CWr2rp25ALlFE11SZ4n4ehRHLOedfW++/yvAB+lIXQQ/REm06EgRx+hoRwh30n44eRv0Wbd1oxicZ/c7LP1euvVKrzdVYlCjCo1Jq2iVHv+V9UO1kmVmND4KNoEhr5ptOFcksd+iRPcP/sFezJ3RQSi7gtOwh2YHCpIAYTihjTSbA333/I0mzn67jcjWeFrLJ8MDqGDXPgV2KI455jQO8U1XK6BYGYcNrxuH6s+oKyAwqpdo=
+addons:
+  sauce_connect: true    

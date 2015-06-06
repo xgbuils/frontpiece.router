@@ -21,6 +21,13 @@
   },
   "homepage": "https://github.com/xgbuils/frontpiece-router",
   "devDependencies": {
+    "karma": "^0.12.35",
+    "karma-browserify": "^4.2.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.1.10",
+    "karma-sauce-launcher": "^0.2.11",
     "browser-sync": "^2.7.6",
     "browserify": "^10.2.3",
     "gulp": "^3.8.11",
@@ -30,5 +37,10 @@
   },
   "dependencies": {
     "object-assign": "^2.0.0"
+  },
+  "saucelabs": {
+    "browsers": {
+      "firefox": ["4", "11", "21", "30", "35"],
+    }
   }
 }
