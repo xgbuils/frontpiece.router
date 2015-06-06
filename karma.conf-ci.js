@@ -4,7 +4,7 @@ var get_browsers = require('./get_browsers.js')
 module.exports = function(config) {
 
   // Use ENV vars on Travis and sauce.json locally to get credentials
-  if (!process.env.SAUCE_USERNAME) {
+  /*if (!process.env.SAUCE_USERNAME) {
     if (!fs.existsSync('sauce.json')) {
       console.log('Create a sauce.json with your credentials based on the sauce-sample.json file.');
       process.exit(1);
@@ -12,7 +12,12 @@ module.exports = function(config) {
       process.env.SAUCE_USERNAME = require('./sauce').username;
       process.env.SAUCE_ACCESS_KEY = require('./sauce').accessKey;
     }
+  }*/
+  if ( !process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY ) {
+    console.log('Sauce environments not set --- Skipping');
+    return process.exit(0);
   }
+  console.log('SAUCE')
 
   // Browsers to run on Sauce Labs
   var customLaunchers = get_browsers()
@@ -62,7 +67,9 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
     sauceLabs: {
-      testName: 'Karma and Sauce Labs demo'
+      build: 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')',
+      startConnect: true,
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
     },
     captureTimeout: 720000,
     customLaunchers: customLaunchers,

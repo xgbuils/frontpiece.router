@@ -2,9 +2,19 @@ var gulp        = require('gulp')
 var gutil       = require('gulp-util')
 var browserify  = require('browserify')
 var browserSync = require('browser-sync')
+var mocha       = require('gulp-mocha')
 var source      = require('vinyl-source-stream')
 var watchify    = require('watchify')
 
+gulp.task('test', function () {
+  gulp.src('./test/*_test.js')
+    .pipe(mocha({
+      globals: {
+        should: require('chai').should(),
+        expect: require('chai').expect
+      }
+    }))
+})
 
 gulp.task('serve', ['js'], function() {
   browserSync({
