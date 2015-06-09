@@ -3,12 +3,14 @@ var get_browsers = require('./get_browsers.js')
 
 module.exports = function(config) {
 
-  if (!fs.existsSync('sauce.json')) {
-    console.log('Create a sauce.json with your credentials based on the sauce-sample.json file.');
-    process.exit(1);
-  } else {
-    process.env.SAUCE_USERNAME = require('./sauce').username;
-    process.env.SAUCE_ACCESS_KEY = require('./sauce').accessKey;
+  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+    if (!fs.existsSync('sauce.json')) {
+      console.log('Create a sauce.json with your credentials based on the sauce-sample.json file.');
+      process.exit(1);
+    } else {
+      process.env.SAUCE_USERNAME = require('./sauce').username;
+      process.env.SAUCE_ACCESS_KEY = require('./sauce').accessKey;
+    }
   }
 
   // Browsers to run on Sauce Labs
