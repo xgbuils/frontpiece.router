@@ -1,10 +1,11 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Router = require('../../')
 
+var router = new Router()
 // returning the user to the initial state
-Router.navigate();
+router.navigate();
 // adding routes
-Router
+router
 .add(/about/, function() {
     console.log('about');
 })
@@ -16,45 +17,57 @@ Router
 })
 .start(/*{pushState: false}*/);
 // forwarding
-Router.navigate('/products/12/edit/22');
+router.navigate('/products/12/edit/22');
 
 document.getElementById('about').addEventListener('click', function () {
-    Router.navigate('about')
+    router.navigate('about')
 })
 document.getElementById('products').addEventListener('click', function () {
-    Router.navigate('products/12/edit/2')
+    router.navigate('products/12/edit/2')
 })
 },{"../../":2}],2:[function(require,module,exports){
 var objectAssign = require('object-assign')
 
-var Router = {
-    routes: [],
-    options: {
+var Router = function (options) {
+    options || (options = {})
+    this.routes  = []
+    this.options = {
         pushState: true,
-        root: '/'
-    },
+    }
+    var location = options.location || window.location
+    this.setHash = function (hash) {
+        defaultSetHash(hash, location)
+    }
+    this.getHash = function () {
+        return defaultGetHash(location)
+    }
+}
+
+objectAssign(Router.prototype, {
+    constructor: Router,
     getFragment: function() {
-        var options = this.options
+        var options  = this.options
         var fragment = ''
         if(options.pushState) {
-            fragment = this.clearSlashes(decodeURI(location.pathname + location.search))
-            fragment = fragment.replace(/\?(.*)$/, '')
-            fragment = options.root !== '/' ? fragment.replace(options.root, '') : fragment
+            fragment = decodeURI(location.pathname + location.search + this.getHash())
         } else {
-            var match = window.location.href.match(/#!\/(.*)$/);
-            fragment = match ? match[1] : ''
+            fragment = this.getHash()
+            fragment = /^!\//.test(fragment) ? fragment.substring(2) : ''
         }
         return this.clearSlashes(fragment)
     },
     clearSlashes: function(path) {
         return path.toString().replace(/\/$/, '').replace(/^\//, '')
     },
+    addSlashes: function (path) {
+        return (path ? '/': '') + path + '/'
+    },
     add: function(re, handler) {
-        if(typeof re == 'function') {
-            handler = re;
-            re = '';
+        if (typeof re === 'function') {
+            handler = re
+            re = ''
         }
-        this.routes.push({ re: re, handler: handler});
+        this.routes.push({ re: re, handler: handler})
         return this;
     },
     remove: function(param) {
@@ -70,20 +83,19 @@ var Router = {
         var options   = this.options
         var eventName = options.pushState ? 'popstate' : 'hashchange'
         window.removeEventListener(eventName, this._onChangeFragment)
-        this.routes = [];
-        options.pushState = undefined;
-        options.root = '/';
-        return this;
+        this.routes = []
+        options.pushState = undefined
+        return this
     },
     check: function(f) {
         var fragment = f || this.getFragment();
-        for(var i=0; i<this.routes.length; i++) {
+        for(var i = 0; i < this.routes.length; i++) {
             var match = fragment.match(this.routes[i].re);
             if(match) {
                 match.shift();
                 this.routes[i].handler.apply({}, match);
                 return this;
-            }           
+            }
         }
         return this;
     },
@@ -91,30 +103,41 @@ var Router = {
         var self = this
         options  = objectAssign(this.options, options)
         options.pushState && (options.pushState = 'onpopstate' in window && typeof history.pushState === 'function')
-        options.root = '/' + this.clearSlashes(options.root)
         this._onChangeFragment = function () {
+            console.log('holaaaaaa')
             current = self.getFragment();
             self.check(current);
         }
         var eventName = options.pushState ? 'popstate' : 'hashchange'
         window.addEventListener(eventName, this._onChangeFragment)
-        return this;
+
+        
+        return this
     },
     navigate: function(path, options) {
         options = objectAssign(this.options, options)
         path = path ? this.clearSlashes(path) : ''
+        var fragment = this.clearSlashes(path)
         if(options.pushState) {
             var current = this.getFragment()
             if (current !== path) {
-                var fragment = options.root + path
-                history.pushState(null, null, fragment);
-                this.check(fragment)
+                history.pushState(null, null, '/' + fragment);
+                this.check(path)
             }
         } else {
-            window.location.href = window.location.href.replace(/#(.*)$/, '') + '#!/' + path;
+            this.setHash(fragment)
         }
-        return this;
+        return this
     }
+})
+
+function defaultSetHash(hash, location) {
+    location.href = location.href.replace(/#(.*)$/, '') + '#!' + hash
+}
+
+function defaultGetHash(location) {
+    var match = location.href.match(/#(.*)$/)
+    return match ? match[1] : ''
 }
 
 module.exports = Router

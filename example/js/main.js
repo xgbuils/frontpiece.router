@@ -1,9 +1,10 @@
 var Router = require('../../')
 
+var router = new Router()
 // returning the user to the initial state
-Router.navigate();
+router.navigate();
 // adding routes
-Router
+router
 .add(/about/, function() {
     console.log('about');
 })
@@ -15,11 +16,11 @@ Router
 })
 .start(/*{pushState: false}*/);
 // forwarding
-Router.navigate('/products/12/edit/22');
+router.navigate('/products/12/edit/22');
 
 document.getElementById('about').addEventListener('click', function () {
-    Router.navigate('about')
+    router.navigate('about')
 })
 document.getElementById('products').addEventListener('click', function () {
-    Router.navigate('products/12/edit/2')
+    router.navigate('products/12/edit/2')
 })
