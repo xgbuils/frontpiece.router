@@ -5,13 +5,13 @@ var router = new Router()
 router.navigate();
 // adding routes
 router
-.add(/about/, function() {
+.on(/about/, function() {
     console.log('about');
 })
-.add(/products\/(.*)\/edit\/(.*)/, function() {
+.on(/products\/(.*)\/edit\/(.*)/, function() {
     console.log('products', arguments);
 })
-.add(function() {
+.on(function() {
     console.log('default');
 })
 .start(/*{pushState: false}*/);

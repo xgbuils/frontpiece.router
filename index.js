@@ -1,18 +1,38 @@
 var objectAssign = require('object-assign')
 
+var defaults = {
+    setHash: function (window, hash) {
+        var location = window.location
+        location.href = location.href.replace(/#(.*)$/, '') + '#!' + hash
+    },
+    getHash: function (window) {
+        var match = window.location.href.match(/#(.*)$/)
+        return match ? match[1] : ''
+    },
+    pushState: function (window, url) {
+        window.history.pushState(null, null, url)
+    },
+    getState: function (window) {
+        var location = window.location
+        return decodeURI(location.pathname + location.search + this.getHash())
+    }
+}
+
 var Router = function (options) {
     options || (options = {})
     this.routes  = []
     this.options = {
         pushState: true,
     }
-    var location = options.location || window.location
-    this.setHash = function (hash) {
-        defaultSetHash(hash, location)
-    }
-    this.getHash = function () {
-        return defaultGetHash(location)
-    }
+    var mock = options.mock || {}
+    var _window = mock.window || window
+    var self = this
+    ;['setHash', 'getHash', 'pushState', 'getState'].forEach(function (method) {
+        self[method] = function () {
+            var args = [].slice.call(arguments)
+            return defaults[method].apply(self, [_window].concat(args))
+        }
+    })
 }
 
 objectAssign(Router.prototype, {
@@ -21,7 +41,7 @@ objectAssign(Router.prototype, {
         var options  = this.options
         var fragment = ''
         if(options.pushState) {
-            fragment = decodeURI(location.pathname + location.search + this.getHash())
+            fragment = this.getState()
         } else {
             fragment = this.getHash()
             fragment = /^!\//.test(fragment) ? fragment.substring(2) : ''
@@ -80,27 +100,17 @@ objectAssign(Router.prototype, {
     navigate: function(path, options) {
         options = objectAssign(this.options, options)
         path = path ? this.clearSlashes(path) : ''
-        var fragment = this.clearSlashes(path)
         if(options.pushState) {
             var current = this.getFragment()
             if (current !== path) {
-                history.pushState(null, null, '/' + fragment);
+                this.pushState('/' + path);
                 this.trigger(path)
             }
         } else {
-            this.setHash('/' + fragment)
+            this.setHash('/' + path)
         }
         return this
     }
 })
-
-function defaultSetHash(hash, location) {
-    location.href = location.href.replace(/#(.*)$/, '') + '#!' + hash
-}
-
-function defaultGetHash(location) {
-    var match = location.href.match(/#(.*)$/)
-    return match ? match[1] : ''
-}
 
 module.exports = Router

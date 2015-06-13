@@ -6,9 +6,11 @@ var objectAssign = require('object-assign')
 describe('Router', function () {
 	describe('location "http://sample.com/" and pushState false', function () {
         beforeEach(function () {
-            this.location = LocationShim('http://sample.com/')
+            this.window = WindowShim('http://sample.com/')
             this.router = new Router({
-                location: this.location
+                mock: {
+                    window: this.window
+                }
             })
             this.router.start({
                 pushState: false,
@@ -27,7 +29,7 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/about" when navigate to about', function () {
                 this.router.navigate('about')
-                this.location.href.should.be.equal('http://sample.com/#!/about')
+                this.window.location.href.should.be.equal('http://sample.com/#!/about')
             })
             it('getFragment() returns "about?foo=bar" when navigate to "about?foo=bar"', function () {
                 this.router.navigate('about?foo=bar')
@@ -35,7 +37,7 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/about?foo=bar" when navigate to "about?foo=bar"', function () {
                 this.router.navigate('about?foo=bar')
-                this.location.href.should.be.equal('http://sample.com/#!/about?foo=bar')
+                this.window.location.href.should.be.equal('http://sample.com/#!/about?foo=bar')
             })
             it('getFragment() returns "about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.router.navigate('about/?foo=bar')
@@ -43,15 +45,17 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.router.navigate('about/?foo=bar')
-                this.location.href.should.be.equal('http://sample.com/#!/about/?foo=bar')
+                this.window.location.href.should.be.equal('http://sample.com/#!/about/?foo=bar')
             })
         })
     })
     describe('location "http://sample.com/index.html" and pushState false', function () {
         beforeEach(function () {
-            this.location = LocationShim('http://sample.com/index.html')
+            this.window = WindowShim('http://sample.com/index.html')
             this.router = new Router({
-                location: this.location
+                mock: {
+                    window: this.window
+                }
             })
             this.router.start({
                 pushState: false,
@@ -69,7 +73,7 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/index.html#!/about" when navigate to about', function () {
                 this.router.navigate('about')
-                this.location.href.should.be.equal('http://sample.com/index.html#!/about')
+                this.window.location.href.should.be.equal('http://sample.com/index.html#!/about')
             })
             it('getFragment() returns "about?foo=bar" when navigate to "about?foo=bar"', function () {
                 this.router.navigate('about?foo=bar')
@@ -77,7 +81,7 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/index.html#!/about?foo=bar" when navigate to "about?foo=bar"', function () {
                 this.router.navigate('about?foo=bar')
-                this.location.href.should.be.equal('http://sample.com/index.html#!/about?foo=bar')
+                this.window.location.href.should.be.equal('http://sample.com/index.html#!/about?foo=bar')
             })
             it('getFragment() returns "about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.router.navigate('about/?foo=bar')
@@ -85,15 +89,17 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/index.html#!/about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.router.navigate('about/?foo=bar')
-                this.location.href.should.be.equal('http://sample.com/index.html#!/about/?foo=bar')
+                this.window.location.href.should.be.equal('http://sample.com/index.html#!/about/?foo=bar')
             })
         })
     })
     describe('location "http://sample.com/index.html" and pushState false', function () {
         beforeEach(function () {
-            this.location = LocationShim('http://sample.com/section/')
+            this.window = WindowShim('http://sample.com/section/')
             this.router = new Router({
-                location: this.location
+                mock: {
+                    window: this.window
+                }
             })
             this.router.start({
                 pushState: false,
@@ -111,7 +117,7 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/section/#!/about" when navigate to about', function () {
                 this.router.navigate('about')
-                this.location.href.should.be.equal('http://sample.com/section/#!/about')
+                this.window.location.href.should.be.equal('http://sample.com/section/#!/about')
             })
             it('getFragment() returns "about?foo=bar" when navigate to "about?foo=bar"', function () {
                 this.router.navigate('about?foo=bar')
@@ -119,7 +125,7 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/section/#!/about?foo=bar" when navigate to "about?foo=bar"', function () {
                 this.router.navigate('about?foo=bar')
-                this.location.href.should.be.equal('http://sample.com/section/#!/about?foo=bar')
+                this.window.location.href.should.be.equal('http://sample.com/section/#!/about?foo=bar')
             })
             it('getFragment() returns "about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.router.navigate('about/?foo=bar')
@@ -127,14 +133,24 @@ describe('Router', function () {
             })
             it('location is "http://sample.com/about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.router.navigate('about/?foo=bar')
-                this.location.href.should.be.equal('http://sample.com/section/#!/about/?foo=bar')
+                this.window.location.href.should.be.equal('http://sample.com/section/#!/about/?foo=bar')
             })
         })
     })
+    
 });
 
-function LocationShim(uri) {
-    return  {
+function WindowShim (uri) {
+    var location = {
         href: uri
+    }
+    return {
+        location: location,
+        history: {
+            pushState: function (state, title, path) {
+                location.href = url.resolve(location.href, path)
+                location = url.parse(location.href)
+            }
+        }
     }
 }
