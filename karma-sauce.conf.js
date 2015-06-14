@@ -61,7 +61,7 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
     sauceLabs: {
-      build: 'frontpiece.router@0.0.0',
+      build: 'frontpiece.router # ' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')',
       startConnect: true,
       //tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
     },
