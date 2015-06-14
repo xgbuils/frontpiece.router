@@ -43,7 +43,9 @@
   },
   "saucelabs": {
     "browsers": {
-      "internet explorer": ["11"]
+      "internet explorer": ["9", "10", "11"],
+      "firefox": ["35"],
+      "chrome": ["39", "40"]
     }
   }
 }
