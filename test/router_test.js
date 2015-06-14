@@ -164,9 +164,13 @@ describe('Router', function () {
                 this.router.getFragment().should.be.equal('about')
             })
             it('location is "http://sample.com/about" when navigate to "/about"', function () {
-                this.start('http://sample.com/section/')
+                this.start('http://sample.com/')
                 this.router.navigate('/about')
-                this.window.location.href.should.be.equal('http://sample.com/about')
+                if (this.router.options.pushState) {
+                    this.window.location.href.should.be.equal('http://sample.com/about')
+                } else {
+                    this.window.location.href.should.be.equal('http://sample.com/#!/about')
+                }
             })
             it('getFragment() returns "about?foo=bar" when navigate to "about?foo=bar"', function () {
                 this.start('http://sample.com/section/index.php')
@@ -174,9 +178,13 @@ describe('Router', function () {
                 this.router.getFragment().should.be.equal('about?foo=bar')
             })
             it('location is "http://sample.com/section/about?foo=bar" when navigate to "/section/about?foo=bar"', function () {
-                this.start('http://sample.com/about/')
+                this.start('http://sample.com/')
                 this.router.navigate('/section/about/?foo=bar')
-                this.window.location.href.should.be.equal('http://sample.com/section/about/?foo=bar')
+                if (this.router.options.pushState) {
+                    this.window.location.href.should.be.equal('http://sample.com/section/about/?foo=bar')
+                } else {
+                    this.window.location.href.should.be.equal('http://sample.com/#!/section/about/?foo=bar')
+                }
             })
             it('getFragment() returns "about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.start('http://sample.com')
@@ -186,7 +194,11 @@ describe('Router', function () {
             it('location is "http://sample.com/about/?foo=bar" when navigate to "about/?foo=bar"', function () {
                 this.start('http://sample.com')
                 this.router.navigate('/about/me')
-                this.window.location.href.should.be.equal('http://sample.com/about/me')
+                if (this.router.options.pushState) {
+                    this.window.location.href.should.be.equal('http://sample.com/about/me')
+                } else {
+                    this.window.location.href.should.be.equal('http://sample.com/#!/about/me')
+                }
             })
         })
     })
