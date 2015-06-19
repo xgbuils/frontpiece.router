@@ -53,16 +53,16 @@ objectAssign(Router.prototype, {
     },
     on: function(re, handler) {
         this.routes.push({ re: re, handler: handler})
-        return this;
+        return this
     },
     remove: function(param) {
-        for(var i=0, r; i<this.routes.length, r = this.routes[i]; i++) {
+        for(var i = 0, r; i < this.routes.length, r = this.routes[i]; ++i) {
             if(r.handler === param || r.re.toString() === param.toString()) {
-                this.routes.splice(i, 1); 
-                return this;
+                this.routes.splice(i, 1)
+                return this
             }
         }
-        return this;
+        return this
     },
     stop: function() {
         var options   = this.options
@@ -73,24 +73,26 @@ objectAssign(Router.prototype, {
         return this
     },
     trigger: function(fragment) {
-        fragment || (fragment = this.getFragment())
-        for(var i = 0; i < this.routes.length; i++) {
-            var match = fragment.match(this.routes[i].re);
-            if(match) {
-                match.shift();
-                this.routes[i].handler.apply({}, match);
-                return this;
+        if (this._trigger) {
+            fragment || (fragment = this.getFragment())
+            for(var i = 0; i < this.routes.length; i++) {
+                var match = fragment.match(this.routes[i].re)
+                if(match) {
+                    match.shift()
+                    this.routes[i].handler.apply(this, match)
+                    return this
+                }
             }
         }
-        return this;
+        return this
     },
     start: function(options) {
         var self = this
         options  = objectAssign(this.options, options)
         options.pushState && (options.pushState = 'onpopstate' in window && typeof history.pushState === 'function')
         this._onChangeFragment = function () {
-            current = self.getFragment();
-            self.trigger(current);
+            current = self.getFragment()
+            self.trigger(current)
         }
         var eventName = options.pushState ? 'popstate' : 'hashchange'
         window.addEventListener(eventName, this._onChangeFragment)
@@ -104,6 +106,7 @@ objectAssign(Router.prototype, {
             var current = this.getFragment()
             if (current !== path) {
                 this.pushState('/' + path)
+                this._trigger = options.trigger
                 this.trigger(path)
             }
         } else {

@@ -131,7 +131,7 @@ objectAssign(Router.prototype, {
         if(options.pushState) {
             var current = this.getFragment()
             if (current !== path) {
-                this.pushState('/' + path);
+                this.pushState('/' + path)
                 this.trigger(path)
             }
         } else {
