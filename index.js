@@ -100,7 +100,7 @@ objectAssign(Router.prototype, {
         return this
     },
     navigate: function(path, options) {
-        options = objectAssign(this.options, options)
+        options = objectAssign({}, this.options, options)
         path = path ? this.clearSlashes(path) : ''
         if(options.pushState) {
             var current = this.getFragment()
